@@ -43,21 +43,28 @@ Untuk mengatasinya, server dapat mengirimkan satu byte segmen TCP secara periodi
 
 Terdapat 10 field data yang wajib ada dan 1 field data opsional dalam setiap TCP Header.
 
-http://www.yaldex.com/tcp_ip/FILES/06fig08.gif
+![alt text](http://www.yaldex.com/tcp_ip/FILES/06fig08.gif)
 
-**Port Asal** (16 bit)
+#### Port Asal (16 bit)
 Untuk mengidentifikasi port yang mengirim.
-**Port Tujuan** (16 bit)
+
+#### Port Tujuan (16 bit)
 Untuk mengidentifikasi port yang menerima.
-***Sequence Number*** (32 bit)
+
+#### Sequence Number (32 bit)
 Jika flag SYN diset, maka bagian ini berisi *sequence number* pertama. Jika tidak, maka bagian ini berisi akumulasi *sequence number* dari byte data pertama.
-***Acknowledgement Number*** (32 bit)
+
+#### Acknowledgement Number (32 bit)
 Jika flag ACK diset, maka bagian ini berisi *sequence number* berikutnya yang dinanti oleh penerima.
-***Data Offset*** (4 bit)
+
+
+#### Data Offset (4 bit)
 Menyatakan ukuran TCP Header dalam words ukuran 32 bit. 
-***Reserved*** (3 bit)
+
+#### Reserved (3 bit)
 Untuk digunakan di masa yang akan datang. Untuk saat ini selalu diisi 0.
-***Flags*** (9 bit)
+
+#### Flags (9 bit)
 Berisi flag berikut:
 - NS
 - CWR
@@ -68,11 +75,14 @@ Berisi flag berikut:
 - RST
 - SYN
 - FIN
-**Ukuran *Window*** (16 bit)
-Berisi nilai informasi yang dapat diterima oleh penerima.
-***Checksum*** (16 bit)
-Nilai untuk pengecekan error pada data.
-***Urgent Pointer*** (16 bit)
-Jika flag URG diset maka bagian ini berisi offset dari sequence number yang menunjukkan *urgent data byte* terakhir.
-***Options*** (0-320 bit)
 
+#### Ukuran Window (16 bit)
+Berisi nilai informasi yang dapat diterima oleh penerima.
+
+#### Checksum (16 bit)
+Nilai untuk pengecekan error pada data.
+
+#### Urgent Pointer (16 bit)
+Jika flag URG diset maka bagian ini berisi offset dari sequence number yang menunjukkan *urgent data byte* terakhir.
+
+#### Options (0-320 bit)
