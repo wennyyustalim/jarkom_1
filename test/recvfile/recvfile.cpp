@@ -23,11 +23,20 @@ int main (int argc, char** argv) {
     int buf_size = atoi (argv[3]);
     int port = atoi (argv[4]);
 
+    // Open file for writing.
+
+    int fd_loc = open (path, O_RDONLY);
+
+    if (fd_loc < 0) {
+        fprintf (stderr, "%s: Unable to open file: %s\n", argv[0], strerror (errno));
+        return errno;
+    }
+
     // Create a socket.
 
-    int fd = socket (AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    int fd_net = socket (AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
-    if (fd < 0) {
+    if (fd_net < 0) {
         fprintf (stderr, "%s: Unable to create socket: %s\n", argv[0], strerror (errno));
         return errno;
     }
@@ -41,22 +50,22 @@ int main (int argc, char** argv) {
     addr.sin_addr.s_addr = htonl (INADDR_ANY);
     addr.sin_port = htons (port);
 
-    int retval = bind (fd, (struct sockaddr*) &addr, sizeof (addr));
+    int ret_bind = bind (fd_net, (struct sockaddr*) &addr, sizeof (addr));
 
-    if (retval < 0) {
+    if (ret_bind < 0) {
         fprintf (stderr, "%s: Unable to bind socket: %s\n", argv[0], strerror (errno));
         return errno;
     }
 
     // Listen for any data.
 
+    Receiver receiver (fd_net, fd_loc);
+    PacketData packet;
+
     while (1) {
-        char buf[1024];
+        read (fd_net, &packet, sizeof (PacketData));
 
-        int len = read (fd, buf, sizeof (buf));
-        buf[len] = 0;
-
-        printf ("%d: %s\n", len, buf);
+        receiver.accept_data (packet);
     }
 
     return EXIT_SUCCESS;
