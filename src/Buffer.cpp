@@ -1,5 +1,7 @@
 #include "Buffer.h"
 
+#include <algorithm>
+
 size_t Buffer::slide (uint32_t _seq_num) {
     bool allowed = false;
     size_t count = 0;
@@ -29,13 +31,10 @@ size_t Buffer::slide (uint32_t _seq_num) {
             cur_seq_num += 1;
             win_begin = (win_begin + 1) % size;
 
-            size_t end_win = (win_begin + win_size) % size;
-
-            // TODO: kasus circular.
-            if (end_win > end) {
-                win_size--;
-            }
+            data_size--;
         }
+
+        win_size = std::min (data_size, pref_win_size);
     }
 
     return count;
