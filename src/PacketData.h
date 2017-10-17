@@ -1,7 +1,7 @@
 #pragma once
 
-#include <algorithm>
 #include <cstdint>
+#include <numeric>
 
 struct PacketData {
     uint8_t soh;
@@ -11,19 +11,6 @@ struct PacketData {
     uint8_t etx;
     uint8_t checksum;
 
-    uint8_t calculate_checksum () {        
-        uint8_t* pb = (uint8_t*) this;
-        uint8_t* pe = (uint8_t*) &this->checksum;
-
-        uint8_t sum = std::accumulate (pb, pe, 0);
-        return sum;
-    }
-
-    bool verify() {
-        return checksum == calculate_checksum();
-    }
-
-    void prepare() {
-        checksum = calculate_checksum();
-    }
+    bool verify (void) const;
+    void prepare (void);
 } __attribute__((__packed__));
