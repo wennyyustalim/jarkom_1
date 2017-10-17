@@ -2,9 +2,9 @@
 
 #include <algorithm>
 
-size_t Buffer::slide (uint32_t _seq_num) {
+char* Buffer::slide (uint32_t _seq_num) {
     bool allowed = false;
-    size_t count = 0;
+    char* p_addr = nullptr;
     
     if (win_size > 0) {
         uint32_t laf = cur_seq_num + win_size;
@@ -17,14 +17,17 @@ size_t Buffer::slide (uint32_t _seq_num) {
     }
 
     if (allowed) {
-        size_t n = _seq_num - cur_seq_num;
+        size_t i_win = _seq_num - cur_seq_num;
+        size_t i_buf = (win_begin + i_win) % size;
+
+        size_t prev_begin = win_begin;
 
         // Accept frame.
-        win_flag |= 1 << n;
+        p_addr = &data[i_buf];
+        win_flag |= 1 << i_win;
 
         // Shift if needed.
         while (win_flag.test (0)) {
-            count++;
             win_flag >>= 1;
 
             // Advance everything.
@@ -37,5 +40,5 @@ size_t Buffer::slide (uint32_t _seq_num) {
         win_size = std::min (data_size, pref_win_size);
     }
 
-    return count;
+    return p_addr;
 }

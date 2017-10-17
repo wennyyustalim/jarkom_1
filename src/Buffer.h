@@ -14,7 +14,7 @@ public:
     static const size_t size = 256;
 
 protected:
-    size_t slide (uint32_t _seq_num);
+    char* slide (uint32_t _seq_num);
 
     uint32_t cur_seq_num = 0;
 
