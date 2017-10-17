@@ -1,11 +1,16 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
+#include <algorithm>
+#include <cerrno>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <fcntl.h>
 #include <netinet/in.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+#include "Receiver.h"
+#include <PacketData.h>
 
 int main (int argc, char** argv) {
 
@@ -25,7 +30,7 @@ int main (int argc, char** argv) {
 
     // Open file for writing.
 
-    int fd_loc = open (path, O_RDONLY);
+    int fd_loc = open (path, O_WRONLY | O_CREAT);
 
     if (fd_loc < 0) {
         fprintf (stderr, "%s: Unable to open file: %s\n", argv[0], strerror (errno));
@@ -60,10 +65,22 @@ int main (int argc, char** argv) {
     // Listen for any data.
 
     Receiver receiver (fd_net, fd_loc);
+
+    receiver.pref_win_size = win_size;
+    receiver.win_size = std::min (receiver.data_size, receiver.pref_win_size);
+
     PacketData packet;
 
     while (1) {
         read (fd_net, &packet, sizeof (PacketData));
+
+        printf ("DEBUG: Receive packet!\n");
+        printf (" soh: %d\n", packet.soh);
+        printf (" seq_num: %d\n", packet.seq_num);
+        printf (" stx: %d\n", packet.stx);
+        printf (" data: %d\n", packet.data);
+        printf (" etx: %d\n", packet.etx);
+        printf (" checksum: %d\n", packet.checksum);
 
         receiver.accept_data (packet);
     }
