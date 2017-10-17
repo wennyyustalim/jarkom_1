@@ -6,6 +6,9 @@ char* Buffer::slide (uint32_t _seq_num) {
     bool allowed = false;
     char* p_addr = nullptr;
     
+    // Fix window size if invalid.
+    win_size = std::min (win_size, data_size);
+
     if (win_size > 0) {
         uint32_t laf = cur_seq_num + win_size;
 
@@ -19,8 +22,6 @@ char* Buffer::slide (uint32_t _seq_num) {
     if (allowed) {
         size_t i_win = _seq_num - cur_seq_num;
         size_t i_buf = (win_begin + i_win) % size;
-
-        size_t prev_begin = win_begin;
 
         // Accept frame.
         p_addr = &data[i_buf];
@@ -36,8 +37,6 @@ char* Buffer::slide (uint32_t _seq_num) {
 
             data_size--;
         }
-
-        win_size = std::min (data_size, pref_win_size);
     }
 
     return p_addr;
