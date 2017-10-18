@@ -2,8 +2,8 @@
 
 #include <chrono>
 
-#include <Node.h>
-#include <Buffer.h>
+#include "Node.h"
+#include "Buffer.h"
 
 class Sender : public Node, public Buffer {
 public:
