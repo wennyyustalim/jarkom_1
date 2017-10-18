@@ -32,6 +32,10 @@ protected:
     
     size_t win_send_begin = 0;
 
+    size_t data_eof = 0;
+    size_t seqn_eof = 0;
+    bool flag_eof = false;
+
 private:
     void send_packet (size_t _i_win, Timestamp _stamp);
 };

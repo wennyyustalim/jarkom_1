@@ -38,6 +38,10 @@ void Sender::network_data
 
         size_t i_win;
 
+        if (flag_eof && (seqn_eof == packet.seq_num)) {
+            alive = false;
+        }
+
         if (accept (packet.seq_num, i_win)) {
             fprintf (stderr, "Sender: Accept ACK i_win=%lu\n", i_win);
 
@@ -85,7 +89,7 @@ void Sender::buffer_flush (void) {
 
     if (old_size == data_size) {
         flag_eof = true;
-        data_eof = (win_begin + data_size) % size;
+        data_eof = (win_begin + data_size - 1) % size;
     }
 
     // Send data.
@@ -106,9 +110,14 @@ void Sender::send_packet (size_t _i_win, Timestamp _stamp) {
 
     packet.seq_num = cur_seq_num + _i_win;
 
-    packet.stx = (flag_eof && (i_buf == data_eof)) ? 0x0 : 0x2;
+    packet.stx = 0x2;
     packet.data = data[i_buf];
     packet.etx = 0x3;
+
+    if (flag_eof && (i_buf == data_eof)) {
+        packet.stx = 0x0;
+        seqn_eof = packet.seq_num;
+    }
 
     packet.prepare ();
 
