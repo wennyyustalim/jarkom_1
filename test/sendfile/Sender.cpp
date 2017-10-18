@@ -55,13 +55,12 @@ void Sender::network_timeout (void) {
         Timestamp tm = data_stamps[i_buf];
 
         if (curr > tm) {
+            fprintf (stderr, "Sender: Timeout i_win=%lu\n", i_win);
+            send_packet (i_win, next);
+        } else {
             int mil =
                 std::chrono::duration_cast<std::chrono::milliseconds> (curr - tm).count ();
             timeout = (timeout > 0) ? std::min (timeout, mil) : mil;
-        } else {
-            fprintf (stderr, "Sender: Timeout i_win=%lu\n", i_win);
-
-            send_packet (i_win, next);
         }
     }
 }
