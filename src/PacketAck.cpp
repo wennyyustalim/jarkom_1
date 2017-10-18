@@ -8,5 +8,6 @@ bool PacketAck::verify (void) const {
 }
 
 void PacketAck::prepare (void) {
+    ack = 0x6;
     checksum = std::accumulate ((uint8_t*) this, (uint8_t*) &checksum, 0);
 }
