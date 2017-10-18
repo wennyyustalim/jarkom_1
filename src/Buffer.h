@@ -14,11 +14,16 @@ public:
 
     virtual ~Buffer (void);
 
-    // Slide.
+    // Tools.
 
     char* slide (uint32_t _seq_num);
 
     const size_t size;
+
+    size_t win_size = 0;
+
+protected:
+    virtual void buffer_flush (void) = 0;
 
     uint32_t cur_seq_num = 0;
 
@@ -26,7 +31,5 @@ public:
     bool* data_flags;
 
     size_t data_size = 0;
-
     size_t win_begin = 0;
-    size_t win_size = 0;
 };
