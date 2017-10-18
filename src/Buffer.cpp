@@ -40,6 +40,9 @@ void Buffer::shift (size_t _len, bool _flush) {
 
     data_size -= _len;
 
+    // Fix window size if invalid.
+    win_size = std::min (win_size, data_size);
+
     if (_flush) {
         buffer_flush ();
     }
