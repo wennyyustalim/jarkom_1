@@ -3,10 +3,10 @@
 #include <Node.h>
 #include <Buffer.h>
 
-class Receiver : public Node, public Buffer<char> {
+class Receiver : public Node, public Buffer {
 public:
-    Receiver (int _fd_net, int _fd_local)
-        : Node (_fd_net, _fd_local), Buffer () {}
+    Receiver (size_t _size = 256)
+        : Buffer (_size) {}
 
 protected:
     void node_init (void);

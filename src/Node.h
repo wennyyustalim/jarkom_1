@@ -6,10 +6,6 @@
 
 class Node {
 public:
-    Node (int _fd_net, int _fd_local) : fd_local (_fd_local) {
-        fd_net = _fd_net;
-    }
-    
     int run (void);
 
     static const size_t pollfds_size = 1;

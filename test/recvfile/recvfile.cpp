@@ -30,7 +30,7 @@ int main (int argc, char** argv) {
 
     // Open file for writing.
 
-    int fd_loc = open (path, O_WRONLY | O_CREAT);
+    int fd_loc = open (path, O_WRONLY | O_CREAT | O_TRUNC);
 
     if (fd_loc < 0) {
         fprintf (stderr, "%s: Unable to open file: %s\n", argv[0], strerror (errno));
@@ -64,8 +64,10 @@ int main (int argc, char** argv) {
 
     // Begin receiving.
 
-    Receiver node (fd_net, fd_loc);
+    Receiver node (buf_size);
 
+    node.fd_net = fd_net;
+    node.fd_local = fd_local;
     node.win_size = win_size;
 
     return node.run ();
