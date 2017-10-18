@@ -13,7 +13,7 @@ public:
     virtual ~Receiver (void);
 
 protected:
-    void node_init (void);
+    void node_prepare (void);
 
     void network_data
         (const Packet& _packet, struct sockaddr* _from, socklen_t _len);

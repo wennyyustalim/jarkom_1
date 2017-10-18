@@ -16,7 +16,7 @@ Receiver::~Receiver (void) {
     delete data_flags;
 }
 
-void Receiver::node_init (void) {
+void Receiver::node_prepare (void) {
     // Do nothing.
 }
 

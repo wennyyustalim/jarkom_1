@@ -11,7 +11,7 @@ int Node::run (void) {
     Packet packet;
 
     // Prepare current node.
-    node_init ();
+    node_prepare ();
 
     while (alive) {
         int ret_poll = poll (pollfds, pollfds_size, timeout);

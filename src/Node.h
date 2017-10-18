@@ -21,7 +21,7 @@ protected:
         {-1, POLLIN, 0}
     };
 
-    virtual void node_init (void) = 0;
+    virtual void node_prepare (void) = 0;
 
     virtual void network_data
         (const Packet& _packet, struct sockaddr* _from, socklen_t _len) = 0;
