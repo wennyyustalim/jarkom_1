@@ -28,7 +28,7 @@ int main (int argc, char** argv) {
 
     // Open file for writing.
 
-    int fd_local = open (path, O_WRONLY | O_CREAT | O_TRUNC);
+    int fd_local = open (path, O_WRONLY | O_CREAT | O_TRUNC, 0664);
 
     if (fd_local < 0) {
         fprintf (stderr, "%s: Unable to open file: %s\n", argv[0], strerror (errno));
