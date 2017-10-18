@@ -18,6 +18,9 @@ int Node::run (void) {
     while (alive) {
         int ret_poll = poll (pollfds, pollfds_size, timeout);
 
+        // Reset timeout.
+        timeout = -1;
+
         if (ret_poll == -1) {
             // Do logging.
             return -1;

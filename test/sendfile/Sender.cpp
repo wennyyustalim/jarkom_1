@@ -53,7 +53,7 @@ void Sender::network_timeout (void) {
         if (curr > tm) {
             int mil =
                 std::chrono::duration_cast<std::chrono::milliseconds> (curr - tm).count ();
-            timeout = std::min (timeout, mil);
+            timeout = (timeout > 0) ? std::min (timeout, mil) : mil;
         } else {
             send_packet (i_win, next);
         }
@@ -94,7 +94,7 @@ void Sender::send_packet (size_t _i_win, Timestamp _stamp) {
     packet.prepare ();
 
     int mil = std::chrono::milliseconds (packet_timeout).count ();
-    timeout = std::min (timeout, mil);
+    timeout = (timeout > 0) ? std::min (timeout, mil) : mil;
 
     write (fd_net, &packet, sizeof (packet));
 }
