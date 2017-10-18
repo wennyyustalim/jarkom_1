@@ -2,7 +2,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#include <PacketAck.h>
+#include <Packet.h>
 
 #include "Receiver.h"
 
@@ -11,15 +11,22 @@ void Receiver::node_init (void) {
 }
 
 void Receiver::network_data
-    (const PacketData& _packet, struct sockaddr* _from, socklen_t _len) {
+    (const Packet& _packet, struct sockaddr* _from, socklen_t _len) {
 
-    if (_packet.verify ()) {
-        char* data = slide (_packet.seq_num);
+    if (_packet.type.id != PACKET_TYPE_DATA) {
+        // Do logging.
+        return;
+    }
+
+    const PacketData& packet = _packet.data;
+
+    if (packet.verify ()) {
+        char* data = slide (packet.seq_num);
 
         fprintf (stderr, "Receiver: data=%p\n", data);
 
         if (data != nullptr) {
-            (*data) = _packet.data;
+            (*data) = packet.data;
         }
     }
 
@@ -32,22 +39,19 @@ void Receiver::network_data
     ack.prepare ();
 
     sendto (fd_net, &ack, sizeof (ack), 0, _from, _len);
+}
 
-    // Handle dirty parts.
+void Receiver::network_timeout (void) {
+    // Do nothing.
+}
 
+void Receiver::buffer_flush (void) {
     size_t dirty_begin = (win_begin + data_size) % size;
 
     if (win_begin > dirty_begin) {
-        fprintf (stderr, "Receiver: win_begin > dirty_begin\n");
         data_size += write (fd_local, &data[dirty_begin], win_begin - dirty_begin);
     } else if (data_size != size) {
-        fprintf (stderr, "Receiver: data_size != size\n");
         data_size += write (fd_local, &data[dirty_begin], size - dirty_begin);
         data_size += write (fd_local, &data[0], win_begin);
     }
-}
-
-void Receiver::network_ack
-    (const PacketAck& _packet, struct sockaddr* _from, socklen_t _len) {
-    // Do nothing.
 }

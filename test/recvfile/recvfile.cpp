@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <cerrno>
 #include <cstdio>
 #include <cstdlib>
@@ -10,7 +9,6 @@
 #include <unistd.h>
 
 #include "Receiver.h"
-#include <PacketData.h>
 
 int main (int argc, char** argv) {
 
@@ -30,9 +28,9 @@ int main (int argc, char** argv) {
 
     // Open file for writing.
 
-    int fd_loc = open (path, O_WRONLY | O_CREAT | O_TRUNC);
+    int fd_local = open (path, O_WRONLY | O_CREAT | O_TRUNC);
 
-    if (fd_loc < 0) {
+    if (fd_local < 0) {
         fprintf (stderr, "%s: Unable to open file: %s\n", argv[0], strerror (errno));
         return errno;
     }

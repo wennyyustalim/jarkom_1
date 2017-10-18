@@ -12,7 +12,8 @@ protected:
     void node_init (void);
 
     void network_data
-        (const PacketData& _packet, struct sockaddr* _from, socklen_t _len);
-    void network_ack
-        (const PacketAck& _packet, struct sockaddr* _from, socklen_t _len);
+        (const Packet& _packet, struct sockaddr* _from, socklen_t _len);
+    void network_timeout (void);
+
+    void buffer_flush (void);
 };

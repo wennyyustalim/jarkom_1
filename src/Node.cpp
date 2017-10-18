@@ -4,9 +4,9 @@
 #include "Node.h"
 
 int Node::run (void) {
-    
+
     struct sockaddr from;
-    socklen_t from_len;
+    socklen_t len;
 
     Packet packet;
 
@@ -20,31 +20,21 @@ int Node::run (void) {
             // Do logging.
             return -1;
         }
-        
+
         // Receive packet.
 
-        int ret_recv =
-            recvfrom (fd_net, &packet, sizeof (packet), 0, &from, &from_len);
-        
-        if (ret_recv == -1) {
-            // Do logging.
-            continue;
-        }
-        
-        fprintf (stderr, "Node: got packet!\n");
+        if (ret_poll > 0) {
+            int ret_recv =
+                recvfrom (fd_net, &packet, sizeof (packet), 0, &from, &len);
 
-        switch (packet.type.id) {
-        case PACKET_TYPE_DATA:
-            network_data (packet.data, &from, from_len);
-            break;
+            if (ret_recv == -1) {
+                // Do logging.
+                continue;
+            }
 
-        case PACKET_TYPE_ACK:
-            network_ack (packet.ack, &from, from_len);
-            break;
-
-        default:
-            // Do logging.
-            break;
+            network_data (packet, &from, len);
+        } else {
+            network_timeout ();
         }
     }
 
