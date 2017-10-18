@@ -62,28 +62,11 @@ int main (int argc, char** argv) {
         return errno;
     }
 
-    // Listen for any data.
+    // Begin receiving.
 
-    Receiver receiver (fd_net, fd_loc);
+    Receiver node (fd_net, fd_loc);
 
-    receiver.pref_win_size = win_size;
-    receiver.win_size = std::min (receiver.data_size, receiver.pref_win_size);
+    node.win_size = win_size;
 
-    PacketData packet;
-
-    while (1) {
-        read (fd_net, &packet, sizeof (PacketData));
-
-        printf ("DEBUG: Receive packet!\n");
-        printf (" soh: %d\n", packet.soh);
-        printf (" seq_num: %d\n", packet.seq_num);
-        printf (" stx: %d\n", packet.stx);
-        printf (" data: %d\n", packet.data);
-        printf (" etx: %d\n", packet.etx);
-        printf (" checksum: %d\n", packet.checksum);
-
-        receiver.accept_data (packet);
-    }
-
-    return EXIT_SUCCESS;
+    return node.run ();
 }

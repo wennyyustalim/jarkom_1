@@ -1,16 +1,18 @@
 #pragma once
 
+#include <Node.h>
 #include <Buffer.h>
-#include <PacketData.h>
 
-class Receiver : public Buffer {
+class Receiver : public Node, public Buffer<char> {
 public:
-    Receiver (int _fd_net, int _fd_loc)
-        : fd_net (_fd_net), fd_loc (_fd_loc) {}
+    Receiver (int _fd_net, int _fd_local)
+        : Node (_fd_net, _fd_local), Buffer () {}
 
-    void accept_data (const PacketData& _packet);
+protected:
+    void node_init (void);
 
-private:
-    int fd_net;
-    int fd_loc;
+    void network_data
+        (const PacketData& _packet, struct sockaddr* _from, socklen_t _len);
+    void network_ack
+        (const PacketAck& _packet, struct sockaddr* _from, socklen_t _len);
 };
