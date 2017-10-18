@@ -5,8 +5,12 @@
 
 class Receiver : public Node, public Buffer {
 public:
-    Receiver (size_t _size = 256)
-        : Buffer (_size) {}
+    Receiver (size_t _size = 256);
+
+    Receiver (const Receiver& _src) = delete;
+    Receiver& operator= (const Receiver& _src) = delete;
+
+    virtual ~Receiver (void);
 
 protected:
     void node_init (void);
@@ -16,4 +20,6 @@ protected:
     void network_timeout (void);
 
     void buffer_flush (void);
+
+    bool* data_flags;
 };

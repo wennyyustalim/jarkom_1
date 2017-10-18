@@ -16,7 +16,8 @@ public:
 
     // Tools.
 
-    char* slide (uint32_t _seq_num);
+    bool accept (uint32_t _seq_num, size_t& _i);
+    void shift (size_t _len, bool _flush = true);
 
     const size_t size;
 
@@ -28,7 +29,6 @@ protected:
     uint32_t cur_seq_num = 0;
 
     char* data;
-    bool* data_flags;
 
     size_t data_size = 0;
     size_t win_begin = 0;

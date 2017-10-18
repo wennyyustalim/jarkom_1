@@ -2,20 +2,18 @@
 
 #include "Buffer.h"
 
-Buffer::Buffer (size_t _size) : size (_size) {
+Buffer::Buffer (size_t _size)
+    : size (_size) {
     data = new char[size] ();
-    data_flags = new bool[size] ();
 }
 
 Buffer::~Buffer (void) {
     delete data;
-    delete data_flags;
 }
 
-char* Buffer::slide (uint32_t _seq_num) {
+bool Buffer::accept (uint32_t _seq_num, size_t& _i) {
     bool allowed = false;
-    char* p_addr = nullptr;
-    
+
     // Fix window size if invalid.
     win_size = std::min (win_size, data_size);
 
@@ -33,27 +31,19 @@ char* Buffer::slide (uint32_t _seq_num) {
         size_t i_win = _seq_num - cur_seq_num;
         size_t i_buf = (win_begin + i_win) % size;
 
-        // Accept frame.
-        p_addr = &data[i_buf];
-        data_flags[i_buf] = true;
-
-        bool will_shift = data_flags[win_begin];
-
-        // Shift if needed.
-        while (data_flags[win_begin]) {
-            data_flags[win_begin] = false;
-
-            // Advance everything.
-            cur_seq_num += 1;
-            win_begin = (win_begin + 1) % size;
-
-            data_size--;
-        }
-
-        if (will_shift) {
-            buffer_flush ();
-        }
+        _i = i_buf;
     }
 
-    return p_addr;
+    return allowed;
+}
+
+void Buffer::shift (size_t _len, bool _flush) {
+    cur_seq_num += _len;
+    win_begin = (win_begin + _len) % size;
+
+    data_size -= _len;
+
+    if (_flush) {
+        buffer_flush ();
+    }
 }

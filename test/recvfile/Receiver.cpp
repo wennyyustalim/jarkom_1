@@ -6,8 +6,18 @@
 
 #include "Receiver.h"
 
-void Receiver::node_init (void) {
+Receiver::Receiver (size_t _size)
+    : Buffer (_size) {
+    data_flags = new bool[size] ();
     data_size = size;
+}
+
+Receiver::~Receiver (void) {
+    delete data_flags;
+}
+
+void Receiver::node_init (void) {
+    // Do nothing.
 }
 
 void Receiver::network_data
@@ -21,12 +31,21 @@ void Receiver::network_data
     const PacketData& packet = _packet.data;
 
     if (packet.verify ()) {
-        char* data = slide (packet.seq_num);
+        size_t i;
 
-        fprintf (stderr, "Receiver: data=%p\n", data);
+        if (accept (packet.seq_num, i)) {
+            data[i] = packet.data;
+            data_flags[i] = true;
 
-        if (data != nullptr) {
-            (*data) = packet.data;
+            // Shift if needed.
+            while (data_flags[win_begin]) {
+                data_flags[win_begin] = false;
+
+                shift (1, false);
+            }
+
+            // Manually flush buffer.
+            buffer_flush ();
         }
     }
 
