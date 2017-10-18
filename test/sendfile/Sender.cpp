@@ -18,6 +18,9 @@ Sender::~Sender (void) {
 
 void Sender::node_prepare (void) {
     buffer_flush ();
+
+    // Handle timeouts.
+    network_timeout ();
 }
 
 void Sender::network_data
@@ -44,6 +47,9 @@ void Sender::network_data
             shift (n);
         }
     }
+
+    // Handle timeouts.
+    network_timeout ();
 }
 
 void Sender::network_timeout (void) {
@@ -97,9 +103,6 @@ void Sender::send_packet (size_t _i_win, Timestamp _stamp) {
     packet.etx = 0x3;
 
     packet.prepare ();
-
-    int mil = std::chrono::milliseconds (packet_timeout).count ();
-    timeout = (timeout > 0) ? std::min (timeout, mil) : mil;
 
     fprintf (stderr, "Sender: Send DATA seq_num=%u\n", packet.seq_num);
 
