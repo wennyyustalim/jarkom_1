@@ -1,4 +1,6 @@
 #include <cstdio>
+#include <cerrno>
+#include <cstring>
 #include <sys/socket.h>
 
 #include "Node.h"
@@ -28,6 +30,9 @@ int Node::run (void) {
                 recvfrom (fd_net, &packet, sizeof (packet), 0, &from, &len);
 
             if (ret_recv == -1) {
+                fprintf
+                    (stderr, "Node: Unable to receive packet: %s\n", strerror (errno));
+
                 // Do logging.
                 continue;
             }
