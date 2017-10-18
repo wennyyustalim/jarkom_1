@@ -32,9 +32,13 @@ void Receiver::network_data
     const PacketData& packet = _packet.data;
 
     if (packet.verify ()) {
+        fprintf (stderr, "Receiver: Receive DATA seq_num=%u\n", packet.seq_num);
+
         size_t i_win;
 
         if (accept (packet.seq_num, i_win)) {
+            fprintf (stderr, "Receiver: Accept DATA i_win=%lu\n", i_win);
+
             size_t i_buf = (win_begin + i_win) % size;
 
             data[i_buf] = packet.data;
@@ -59,6 +63,8 @@ void Receiver::network_data
     ack.seq_num = cur_seq_num - 1;
     ack.win_size = 0;
     ack.prepare ();
+
+    fprintf (stderr, "Receiver: Send ACK seq_num=%u\n", ack.seq_num);
 
     sendto (fd_net, &ack, sizeof (ack), 0, _from, _len);
 }

@@ -31,9 +31,13 @@ void Sender::network_data
     const PacketAck& packet = _packet.ack;
 
     if (packet.verify ()) {
+        fprintf (stderr, "Sender: Receive ACK seq_num=%u\n", packet.seq_num);
+
         size_t i_win;
 
         if (accept (packet.seq_num, i_win)) {
+            fprintf (stderr, "Sender: Accept ACK i_win=%lu\n", i_win);
+
             size_t n = i_win + 1;
 
             win_send_begin -= n;
@@ -55,6 +59,8 @@ void Sender::network_timeout (void) {
                 std::chrono::duration_cast<std::chrono::milliseconds> (curr - tm).count ();
             timeout = (timeout > 0) ? std::min (timeout, mil) : mil;
         } else {
+            fprintf (stderr, "Sender: Timeout i_win=%lu\n", i_win);
+
             send_packet (i_win, next);
         }
     }
@@ -95,6 +101,8 @@ void Sender::send_packet (size_t _i_win, Timestamp _stamp) {
 
     int mil = std::chrono::milliseconds (packet_timeout).count ();
     timeout = (timeout > 0) ? std::min (timeout, mil) : mil;
+
+    fprintf (stderr, "Sender: Send DATA seq_num=%u\n", packet.seq_num);
 
     write (fd_net, &packet, sizeof (packet));
 }
