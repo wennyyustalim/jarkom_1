@@ -14,7 +14,24 @@ K2-17 HabisUTS
 
 ## Petunjuk Penggunaan Program
 
+Untuk mengcompile, ketik:
+```
+make
+```
+
+Untuk menjalankan sendfile, ketik
+```
+./sendfile <filename> <windowsize> <buffersize> <destination_port>
+```
+
+Untuk menjalankan recvfile, ketik
+```
+./recvfile​ ​ <filename>​ ​ <windowsize>​ ​ <buffersize>​ ​ <port>
+```
+
 ## Cara Kerja Sliding Window Kami
+
+Dari parameter ukuran sliding window yang kami terima, 
 
 ### Fungsi x
 
