@@ -8,7 +8,7 @@ Buffer::Buffer (size_t _size)
 }
 
 Buffer::~Buffer (void) {
-    delete data;
+    delete[] data;
 }
 
 bool Buffer::accept (uint32_t _seq_num, size_t& _i) {

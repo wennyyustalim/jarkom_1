@@ -9,11 +9,12 @@
 Receiver::Receiver (size_t _size)
     : Buffer (_size) {
     data_flags = new bool[size] ();
+
     data_size = size;
 }
 
 Receiver::~Receiver (void) {
-    delete data_flags;
+    delete[] data_flags;
 }
 
 void Receiver::node_prepare (void) {
@@ -53,7 +54,7 @@ void Receiver::network_data
 
     PacketAck ack;
 
-    ack.seq_num = cur_seq_num;
+    ack.seq_num = cur_seq_num - 1;
     ack.win_size = 0;
     ack.prepare ();
 
