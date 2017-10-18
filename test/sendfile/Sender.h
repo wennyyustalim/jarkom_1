@@ -7,6 +7,11 @@
 
 class Sender : public Node, public Buffer {
 public:
+    using Timestamp = std::chrono::time_point<std::chrono::steady_clock>;
+
+    const std::chrono::milliseconds packet_timeout =
+        std::chrono::milliseconds (100);
+
     Sender (size_t _size = 256);
 
     Sender (const Sender& _src) = delete;
@@ -23,10 +28,10 @@ protected:
 
     void buffer_flush (void);
 
-    std::chrono::time_point<std::chrono::steady_clock>* data_stamps;
+    Timestamp* data_stamps;
     
     size_t win_send_begin = 0;
 
 private:
-    void send_packet (size_t _i_win) const;
+    void send_packet (size_t _i_win, Timestamp _stamp);
 };
