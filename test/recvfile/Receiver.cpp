@@ -41,8 +41,12 @@ void Receiver::network_data
 
             size_t i_buf = (win_begin + i_win) % size;
 
-            data[i_buf] = packet.data;
-            data_flags[i_buf] = true;
+            if (packet.stx == 0x2) {
+                data[i_buf] = packet.data;
+                data_flags[i_buf] = true;
+            } else {
+                alive = false;
+            }
 
             // Shift if needed.
             while (data_flags[win_begin]) {

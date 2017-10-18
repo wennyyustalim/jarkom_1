@@ -74,11 +74,18 @@ void Sender::network_timeout (void) {
 void Sender::buffer_flush (void) {
     size_t dirty_begin = (win_begin + data_size) % size;
 
+    size_t old_size = data_size;
+
     if (win_begin > dirty_begin) {
         data_size += read (fd_local, &data[dirty_begin], win_begin - dirty_begin);
     } else if (data_size != size) {
         data_size += read (fd_local, &data[dirty_begin], size - dirty_begin);
         data_size += read (fd_local, &data[0], win_begin);
+    }
+
+    if (old_size == data_size) {
+        flag_eof = true;
+        data_eof = (win_begin + data_size) % size;
     }
 
     // Send data.
@@ -98,7 +105,8 @@ void Sender::send_packet (size_t _i_win, Timestamp _stamp) {
     data_stamps[i_buf] = _stamp;
 
     packet.seq_num = cur_seq_num + _i_win;
-    packet.stx = 0x2;
+
+    packet.stx = (flag_eof && (i_buf == data_eof)) ? 0x0 : 0x2;
     packet.data = data[i_buf];
     packet.etx = 0x3;
 
