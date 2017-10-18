@@ -31,10 +31,10 @@ void Sender::network_data
     const PacketAck& packet = _packet.ack;
 
     if (packet.verify ()) {
-        size_t i;
+        size_t i_win;
 
-        if (accept (packet.seq_num, i)) {
-            size_t n = i + 1;
+        if (accept (packet.seq_num, i_win)) {
+            size_t n = i_win + 1;
 
             win_send_begin -= n;
             shift (n);
