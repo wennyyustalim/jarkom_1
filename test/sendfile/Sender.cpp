@@ -40,6 +40,7 @@ void Sender::network_data
 
         if (flag_eof && (seqn_eof == packet.seq_num)) {
             alive = false;
+            return;
         }
 
         if (accept (packet.seq_num, i_win)) {
@@ -114,9 +115,13 @@ void Sender::send_packet (size_t _i_win, Timestamp _stamp) {
     packet.data = data[i_buf];
     packet.etx = 0x3;
 
+    bool do_exit = false;
+
     if (flag_eof && (i_buf == data_eof)) {
         packet.stx = 0x0;
         seqn_eof = packet.seq_num;
+
+        do_exit = true;
     }
 
     packet.prepare ();
@@ -124,4 +129,8 @@ void Sender::send_packet (size_t _i_win, Timestamp _stamp) {
     fprintf (stderr, "Sender: Send DATA seq_num=%u\n", packet.seq_num);
 
     write (fd_net, &packet, sizeof (packet));
+
+    if (do_exit) {
+        exit (0);
+    }
 }
