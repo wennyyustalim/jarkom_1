@@ -32,11 +32,13 @@ void Receiver::network_data
     const PacketData& packet = _packet.data;
 
     if (packet.verify ()) {
-        size_t i;
+        size_t i_win;
 
-        if (accept (packet.seq_num, i)) {
-            data[i] = packet.data;
-            data_flags[i] = true;
+        if (accept (packet.seq_num, i_win)) {
+            size_t i_buf = (win_begin + i_win) % size;
+
+            data[i_buf] = packet.data;
+            data_flags[i_buf] = true;
 
             // Shift if needed.
             while (data_flags[win_begin]) {

@@ -16,7 +16,7 @@ public:
 
     // Tools.
 
-    bool accept (uint32_t _seq_num, size_t& _i);
+    bool accept (uint32_t _seq_num, size_t& _i_win);
     void shift (size_t _len, bool _flush = true);
 
     const size_t size;

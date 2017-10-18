@@ -11,7 +11,7 @@ Buffer::~Buffer (void) {
     delete[] data;
 }
 
-bool Buffer::accept (uint32_t _seq_num, size_t& _i) {
+bool Buffer::accept (uint32_t _seq_num, size_t& _i_win) {
     bool allowed = false;
 
     // Fix window size if invalid.
@@ -28,10 +28,7 @@ bool Buffer::accept (uint32_t _seq_num, size_t& _i) {
     }
 
     if (allowed) {
-        size_t i_win = _seq_num - cur_seq_num;
-        size_t i_buf = (win_begin + i_win) % size;
-
-        _i = i_buf;
+        _i_win = _seq_num - cur_seq_num;
     }
 
     return allowed;
