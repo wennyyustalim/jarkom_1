@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Node.h>
-#include <Buffer.h>
+#include "Node.h"
+#include "Buffer.h"
 
 class Receiver : public Node, public Buffer {
 public:
