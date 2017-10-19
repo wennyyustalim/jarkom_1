@@ -97,6 +97,10 @@ void Sender::send_packet (size_t _i_win, Timestamp _stamp) {
 
     data_stamps[i_buf] = _stamp;
 
+    int mil =
+        std::chrono::duration_cast<std::chrono::milliseconds> (packet_timeout).count ();
+    timeout = (timeout > 0) ? std::min (timeout, mil) : mil;
+
     packet.seq_num = cur_seq_num + _i_win;
     packet.stx = 0x2;
     packet.data = data[i_buf];
