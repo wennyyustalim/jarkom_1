@@ -14,15 +14,38 @@ K2-17 HabisUTS
 
 ## Petunjuk Penggunaan Program
 
+Untuk mengcompile, ketik:
+```
+make
+```
+
+Untuk menjalankan sendfile, ketik
+```
+./sendfile <filename> <windowsize> <buffersize> <destination_port>
+```
+
+Untuk menjalankan recvfile, ketik
+```
+./recvfile​ ​ <filename>​ ​ <windowsize>​ ​ <buffersize>​ ​ <port>
+```
+
 ## Cara Kerja Sliding Window Kami
 
-### Fungsi x
+Menggunakan circular buffer, ketika data masuk ke sliding window, maka window akan digeser. Kami menggunakan variabel penunjuk data mulai dan panjang. Jika diperlukan, kami dapat menginfer akhir data dari mulainya sliding window dan panjang sliding window. Hal ini kami gunakan saat menulis/membaca file external ke/dari buffer.
 
-Deskripsi fungsi x
+### Fungsi Sender::network_data
 
-### Fungsi y
+Menerima ACK dan menggeser sliding window.
 
-Deskripsi fungsi y
+### Fungsi Receiver::network_data
+
+Menerima Data dan mengirimkan ACK yang sesuai lalu menggeser sliding window.
+
+## Pembagian kerja
+
+* 13515002: Membuat model dari buffer, packet
+* 13515071: Membuat model dari sender, receiver
+* 13515086: Membuat readme
 
 ## Answers to Questions
 
