@@ -2,16 +2,15 @@
 
 all: recvfile sendfile
 
-%.o: %.cpp
+src/%.o: src/%.cpp
 	g++ -c -I. -std=c++11 -o $@ $<
 
-recvfile: Buffer.o Node.o PacketAck.o PacketData.o Receiver.o recvfile.o
+recvfile: src/Buffer.o src/Node.o src/PacketAck.o src/PacketData.o src/Receiver.o src/recvfile.o
 	g++ -std=c++11 -o $@ $^
 
-sendfile: Buffer.o Node.o PacketAck.o PacketData.o Sender.o sendfile.o
+sendfile: src/Buffer.o src/Node.o src/PacketAck.o src/PacketData.o src/Sender.o src/sendfile.o
 	g++ -std=c++11 -o $@ $^
 
 clean:
-	rm *.o
-	rm recvfile sendfile
-
+	rm -f src/*.o
+	rm -f recvfile sendfile

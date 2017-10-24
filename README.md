@@ -31,15 +31,21 @@ Untuk menjalankan recvfile, ketik
 
 ## Cara Kerja Sliding Window Kami
 
-Dari parameter ukuran sliding window yang kami terima, 
+Menggunakan circular buffer, ketika data masuk ke sliding window, maka window akan digeser. Kami menggunakan variabel penunjuk data mulai dan panjang. Jika diperlukan, kami dapat menginfer akhir data dari mulainya sliding window dan panjang sliding window. Hal ini kami gunakan saat menulis/membaca file external ke/dari buffer.
 
-### Fungsi x
+### Fungsi Sender::network_data
 
-Deskripsi fungsi x
+Menerima ACK dan menggeser sliding window.
 
-### Fungsi y
+### Fungsi Receiver::network_data
 
-Deskripsi fungsi y
+Menerima Data dan mengirimkan ACK yang sesuai lalu menggeser sliding window.
+
+## Pembagian kerja
+
+* 13515002: Membuat model dari buffer, packet
+* 13515071: Membuat model dari sender, receiver
+* 13515086: Membuat readme
 
 ## Answers to Questions
 
