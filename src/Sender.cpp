@@ -88,6 +88,8 @@ void Sender::buffer_flush (void) {
         data_size += read (fd_local, &data[0], win_begin);
     }
 
+    win_size = std::min (win_size, data_size);
+
     if (old_size == data_size) {
         flag_eof = true;
         data_eof = (win_begin + data_size - 1) % size;
