@@ -81,6 +81,8 @@ void Sender::buffer_flush (void) {
         data_size += read (fd_local, &data[0], win_begin);
     }
 
+    win_size = std::min (win_size, data_size);
+
     // Send data.
 
     Timestamp next = std::chrono::steady_clock::now () + packet_timeout;
