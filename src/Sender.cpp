@@ -40,7 +40,8 @@ void Sender::network_data
 
         if (flag_eof && (seqn_eof == packet.seq_num)) {
             alive = false;
-            return;
+
+            exit(0);
         }
 
         if (accept (packet.seq_num, i_win)) {
@@ -88,12 +89,20 @@ void Sender::buffer_flush (void) {
         data_size += read (fd_local, &data[0], win_begin);
     }
 
+    if (old_size == data_size && !flag_eof) {
+        flag_eof = true;
+        data_eof = (win_begin + data_size) % size;
+
+        data_size += 1;
+        win_size = std::max (win_size, data_size);
+    }
+
     win_size = std::min (win_size, data_size);
 
-    if (old_size == data_size) {
-        flag_eof = true;
-        data_eof = (win_begin + data_size - 1) % size;
-    }
+    printf("DEBUG: win_size = %d\n", win_size);
+    printf("DEBUG: flag_eof = %d\n", flag_eof);
+    printf("DEBUG: data_eof = %d\n", data_eof);
+    printf("DEBUG: data_size = %d\n", data_size);
 
     // Send data.
 
@@ -121,13 +130,11 @@ void Sender::send_packet (size_t _i_win, Timestamp _stamp) {
     packet.data = data[i_buf];
     packet.etx = 0x3;
 
-    bool do_exit = false;
+    printf("IBUF: %d\n", i_buf);
 
     if (flag_eof && (i_buf == data_eof)) {
         packet.stx = 0x0;
         seqn_eof = packet.seq_num;
-
-        do_exit = true;
     }
 
     packet.prepare ();
@@ -135,8 +142,4 @@ void Sender::send_packet (size_t _i_win, Timestamp _stamp) {
     fprintf (stderr, "Sender: Send DATA seq_num=%u\n", packet.seq_num);
 
     write (fd_net, &packet, sizeof (packet));
-
-    if (do_exit) {
-        exit (0);
-    }
 }

@@ -37,26 +37,30 @@ void Receiver::network_data
         size_t i_win;
 
         if (accept (packet.seq_num, i_win)) {
-            fprintf (stderr, "Receiver: Accept DATA i_win=%lu\n", i_win);
+            fprintf (stderr, "Receiver: Accept DATA i_win=%lu, stx=%lu\n", i_win, packet.stx);
 
             size_t i_buf = (win_begin + i_win) % size;
 
-            data[i_buf] = packet.data;
-            data_flags[i_buf] = true;
+            if (packet.stx == 0x2) {
+                data[i_buf] = packet.data;
+                data_flags[i_buf] = true;
 
-            if (packet.stx != 0x2) {
+                // Shift if needed.
+                while (data_flags[win_begin]) {
+                    data_flags[win_begin] = false;
+
+                    shift (1, false);
+                }
+
+                // Manually flush buffer.
+                buffer_flush ();
+            } else {
+                // HACK: Flush buffer, then send ACK.
+                buffer_flush ();
+
                 alive = false;
-            }
-
-            // Shift if needed.
-            while (data_flags[win_begin]) {
-                data_flags[win_begin] = false;
-
                 shift (1, false);
             }
-
-            // Manually flush buffer.
-            buffer_flush ();
         }
     }
 
